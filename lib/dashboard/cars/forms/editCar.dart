@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:load/load.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:samannegarusers/Helper/ViewHelper.dart';
@@ -18,6 +19,7 @@ import 'package:samannegarusers/dashboard/ui/menu.dart';
 import 'package:samannegarusers/dashboard/util.dart';
 import 'package:samannegarusers/funcs.dart';
 import 'package:samannegarusers/login/constants.dart';
+import 'package:samannegarusers/screens/success_screen.dart';
 
 var COLORS = [
   Colors.amber,
@@ -567,42 +569,50 @@ class _EditCarState extends State<EditCar> with TickerProviderStateMixin {
             carColorId,
             production_year.text.toString(),
             vinnumber.text.toString());
-        Navigator.of(context).pushReplacement(PageTransition(
-            child: carsList(
-          title: 'تتیر',
-          name: widget.name.toString(),
-          lastName: widget.lastName.toString(),
-          customerID: widget.customerID.toString(),
-        )));
       },
     );
   }
+
+  Future<void> addMyCar(carId, _customer_id, carModelId, carBrandId, carGroupId,
+      typeOfCarId, platenumber, carColorId, production_year, vinnumber) async {
+    print("_customer_id" + _customer_id);
+    print(carModelId);
+    print("carBrandId" + carBrandId);
+    print(typeOfCarId);
+    print(carGroupId);
+    print(platenumber);
+    print(carColorId);
+    print(production_year);
+    print(vinnumber);
+    showLoadingDialog();
+    var addcar = await makePostRequestAmin(
+        CustomStrings.API_ROOT + 'Customers/Cars/CustomerCars.php', {
+      'api_type': 'quickEdit',
+      'customer_id': _customer_id,
+      'customer_car_id': carId,
+      'car_model_id': carModelId,
+      'car_brand_id': carBrandId,
+      'car_group_id': carGroupId,
+      'car_name_id': typeOfCarId,
+      'plaque': platenumber,
+      'color_id': carColorId,
+      'production_date': production_year,
+      'vin_number': vinnumber
+    }).then((value) {
+      // print(value.toString());
+      if(value['status'] == 'done'){
+        hideLoadingDialog();
+        Navigator.push(
+            context,
+            PageTransition(
+                type: PageTransitionType.downToUp,
+                child: SuccessPage('خودرو با موفقیت ویرایش شد !' , widget.name , widget.lastName , widget.customerID)));
+      }else{
+        print('amin0');
+      }
+    });
+    print(addcar.content().toString());
+  }
+
 }
 
-Future<void> addMyCar(carId, _customer_id, carModelId, carBrandId, carGroupId,
-    typeOfCarId, platenumber, carColorId, production_year, vinnumber) async {
-  print("_customer_id" + _customer_id);
-  print(carModelId);
-  print("carBrandId" + carBrandId);
-  print(typeOfCarId);
-  print(carGroupId);
-  print(platenumber);
-  print(carColorId);
-  print(production_year);
-  print(vinnumber);
-  var addcar = await makePostRequest(
-      CustomStrings.API_ROOT + 'Customers/Cars/CustomerCars.php', {
-    'api_type': 'quickEdit',
-    'customer_id': _customer_id,
-    'customer_car_id': carId,
-    'car_model_id': carModelId,
-    'car_brand_id': carBrandId,
-    'car_group_id': carGroupId,
-    'car_name_id': typeOfCarId,
-    'plaque': platenumber,
-    'color_id': carColorId,
-    'production_date': production_year,
-    'vin_number': vinnumber
-  });
-  print(addcar.content().toString());
-}

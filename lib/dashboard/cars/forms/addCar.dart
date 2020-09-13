@@ -906,41 +906,43 @@ class _AddCarState extends State<AddCar> with TickerProviderStateMixin {
       ),
     );
   }
+
+  Future<void> addMyCar(
+      BuildContext context,
+      _customer_id,
+      carModelId,
+      carBrandId,
+      carGroupId,
+      typeOfCarId,
+      platenumber,
+      carColorId,
+      production_year,
+      vinnumber) async {
+    showLoadingDialog();
+    makePostRequestAmin(
+        CustomStrings.API_ROOT + 'Customers/Cars/CustomerCars.php', {
+      'api_type': 'add',
+      'customer_id': _customer_id,
+      'car_model_id': carModelId,
+      'car_brand_id': carBrandId,
+      'car_group_id': carGroupId,
+      'car_name_id': typeOfCarId,
+      'plaque': platenumber,
+      'color_id': carColorId,
+      'production_date': production_year,
+      'vin_number': vinnumber
+    }).then((value) {
+      if (value['result'] == 'success') {
+        hideLoadingDialog();
+        Navigator.push(
+            context,
+            PageTransition(
+                type: PageTransitionType.downToUp,
+                child: SuccessPage('خودرو جدید با موفقیت اضافه شد !' , widget.name , widget.lastName , widget.customerID)));
+        print('amin');
+      }
+    });
+  }
+
 }
 
-Future<void> addMyCar(
-    BuildContext context,
-    _customer_id,
-    carModelId,
-    carBrandId,
-    carGroupId,
-    typeOfCarId,
-    platenumber,
-    carColorId,
-    production_year,
-    vinnumber) async {
-  showLoadingDialog();
-  makePostRequestAmin(
-      CustomStrings.API_ROOT + 'Customers/Cars/CustomerCars.php', {
-    'api_type': 'add',
-    'customer_id': _customer_id,
-    'car_model_id': carModelId,
-    'car_brand_id': carBrandId,
-    'car_group_id': carGroupId,
-    'car_name_id': typeOfCarId,
-    'plaque': platenumber,
-    'color_id': carColorId,
-    'production_date': production_year,
-    'vin_number': vinnumber
-  }).then((value) {
-    if (value['result'] == 'success') {
-      hideLoadingDialog();
-      Navigator.push(
-          context,
-          PageTransition(
-              type: PageTransitionType.downToUp,
-              child: SuccessPage('خودرو جدید با موفقیت اضافه شد !')));
-      print('amin');
-    }
-  });
-}

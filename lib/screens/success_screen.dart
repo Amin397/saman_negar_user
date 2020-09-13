@@ -2,14 +2,23 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:samannegarusers/dashboard/cars/carsList.dart';
 
 
 class SuccessPage extends StatefulWidget {
 
   String centerTitle;
-  SuccessPage(this.centerTitle){
+   String name;
+   String lastName;
+   String customerID;
+
+  SuccessPage(this.centerTitle, this.name, this.lastName, this.customerID){
     this.centerTitle = centerTitle;
+    this.name = name;
+    this.lastName = lastName;
+    this.customerID = customerID;
+
   }
 
   @override
@@ -28,13 +37,20 @@ class _SuccessPageState extends State<SuccessPage> with TickerProviderStateMixin
     _controller = AnimationController(vsync: this);
 
     Timer(Duration(seconds: 4), () {
-      Navigator.of(context).pop(0);
       // Navigator.of(context).pushReplacement(
       //     PageRouteBuilder(
       //         transitionDuration:
       //         Duration(milliseconds: 600),
       //         pageBuilder: (_, __, ___) =>
       //         carsList()));
+
+      Navigator.of(context).pushReplacement(PageTransition(
+          child: carsList(
+            title: 'تتیر',
+            name: widget.name.toString(),
+            lastName: widget.lastName.toString(),
+            customerID: widget.customerID.toString(),
+          ), type: null));
     });
   }
 
