@@ -1,17 +1,12 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
-import 'package:load/load.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
+import 'package:samannegarusers/Helper/ViewHelper.dart';
 import 'package:samannegarusers/dashboard/cars/carsList.dart';
-import 'package:samannegarusers/dashboard/cars/forms/addCar.dart';
 import 'package:samannegarusers/dashboard/cars/models/carBrands.dart';
-import 'package:samannegarusers/dashboard/cars/models/carColors.dart';
 import 'package:samannegarusers/dashboard/cars/models/carColors.dart';
 import 'package:samannegarusers/dashboard/cars/models/carGroups.dart';
 import 'package:samannegarusers/dashboard/cars/models/carModel.dart';
@@ -23,7 +18,6 @@ import 'package:samannegarusers/dashboard/ui/menu.dart';
 import 'package:samannegarusers/dashboard/util.dart';
 import 'package:samannegarusers/funcs.dart';
 import 'package:samannegarusers/login/constants.dart';
-import 'package:shimmer/shimmer.dart';
 
 var COLORS = [
   Colors.amber,
@@ -34,7 +28,11 @@ var COLORS = [
 ];
 
 class EditCar extends StatefulWidget {
-  EditCar({Key key, this.title, this.name, this.lastName, this.customerID,
+  EditCar({
+    Key key,
+    this.name,
+    this.lastName,
+    this.customerID,
     @required this.carId,
     @required this.vin_number,
     @required this.pdate,
@@ -45,10 +43,8 @@ class EditCar extends StatefulWidget {
     @required this.carBrandId,
     @required this.carModelId,
     @required this.carNameId,
-  })
-      : super(key: key);
+  }) : super(key: key);
 
-  final String title;
   final String name;
   final String lastName;
   final String customerID;
@@ -64,21 +60,16 @@ class EditCar extends StatefulWidget {
   final String carNameId;
 
   @override
-  _EditCarState createState() => new _EditCarState(
-
-  );
+  _EditCarState createState() => new _EditCarState();
 }
 
 class _EditCarState extends State<EditCar> with TickerProviderStateMixin {
   MenuController menuController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-  GlobalKey<RefreshIndicatorState>();
+      GlobalKey<RefreshIndicatorState>();
 
-
-  _EditCarState(
-
-      );
+  _EditCarState();
 
 //  final circularController = FabCircularMenuController();
   var cars;
@@ -88,55 +79,6 @@ class _EditCarState extends State<EditCar> with TickerProviderStateMixin {
   String carId;
   var complainData;
   String _customer_id ;
-  var plateno;
-  CarColors colorvalue;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    menuController = new MenuController(
-      vsync: this,
-    )..addListener(() => setState(() {}));
-    setState(() {
-      _customer_id = widget.customerID;
-      vinnumber.text = widget.vin_number;
-      production_year.text =widget.pdate;
-      plateno = widget.plaque.split(',');
-      platenumber1.text = plateno[0].split('[')[1];
-      platenumber2.text = plateno[1];
-      platenumber3.text = plateno[2];
-      platenumber4.text = plateno[3].split(']')[0];
-      carModelId = widget.carModelId ;
-      carBrandId = widget.carBrandId ;
-      carGroupId = widget.carGroupId ;
-      typeOfCarId = widget.carNameId ;
-      carColorId = widget.carcolorid ;
-    });
-    print("editcar plaque :"+ plateno[0]);
-    print("editcar plaque :"+ plateno[0].split('[')[1]);
-    print("editcar plaque :"+ plateno[1]);
-    print("editcar plaque :"+ plateno[2]);
-    print("editcar plaque :"+ plateno[3]);
-    print("editcar plaque :"+ plateno[3].split(']')[0]);
-    print("editcar plaque :"+ widget.carspecs);
-    print("editcar plaque :"+ widget.carspecs.split('-')[2]);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-//    print(":editcar car id :"+ carId);
-
-    return ChangeNotifierProvider.value(
-      value: menuController,
-      child: ZoomScaffold(
-        menuScreen: MenuScreen(
-          fullName: widget.name.toString() + ' ' + widget.lastName.toString(),
-        ),
-        contentScreen: Layout(contentBuilder: (cc) => page(context)),
-      ),
-    );
-  }
 
   TextEditingController production_year = new TextEditingController();
   TextEditingController vinnumber = new TextEditingController();
@@ -166,23 +108,75 @@ class _EditCarState extends State<EditCar> with TickerProviderStateMixin {
   Future __carModelFuture = fetchCarModel('0', '0', '0');
 
   @override
+  void initState() {
+
+    print('${widget.plaque}');
+
+
+    super.initState();
+    menuController = new MenuController(
+      vsync: this,
+    )..addListener(() => setState(() {}));
+    setState(() {
+      _customer_id = widget.customerID;
+      vinnumber.text = widget.vin_number;
+      production_year.text = widget.pdate;
+      platenumber1.text = widget.plaque.substring(1 , 3);
+      platenumber2.text = widget.plaque.substring(5 , 6);
+      platenumber3.text = widget.plaque.substring(8 , 11);
+      platenumber4.text = widget.plaque.substring(13 , 15);
+      carModelId = widget.carModelId;
+      carBrandId = widget.carBrandId;
+      carGroupId = widget.carGroupId;
+      typeOfCarId = widget.carNameId;
+      carColorId = (widget.carcolorid == null) ? 1 : widget.carcolorid;
+    });
+    print("editcar plaque :" + widget.plaque.substring(1 , 3));
+    print("editcar plaque :" + widget.plaque.substring(5 , 6));
+    print("editcar plaque :" +  widget.plaque.substring(8 , 11));
+    print("editcar plaque :" + widget.plaque.substring(13 , 15));
+    // print("editcar plaque :" + widget.carspecs);
+    // print("editcar plaque :" + widget.carspecs.split('-')[2]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+//    print(":editcar car id :"+ carId);
+
+    return ChangeNotifierProvider.value(
+      value: menuController,
+      child: ZoomScaffold(
+        menuScreen: MenuScreen(
+          fullName: widget.name.toString() + ' ' + widget.lastName.toString(),
+        ),
+        contentScreen: Layout(contentBuilder: (cc) => page(context)),
+      ),
+    );
+  }
+
+  @override
   Widget page(BuildContext context) {
+
+    Size size = MediaQuery.of(context).size;
+
     return Directionality(
         textDirection: TextDirection.rtl,
         child: new Scaffold(
             resizeToAvoidBottomPadding: false,
             key: _scaffoldKey,
-            body: new Stack(
-              children: <Widget>[
-                new Transform.translate(
-                  offset: new Offset(
-                      0.0, MediaQuery.of(context).size.height * 0.0001),
-                  key: _refreshIndicatorKey,
-                  child: CustomScrollView(
-                    slivers: <Widget>[SliverFillRemaining(
+            body: Container(
+              width: size.width,
+              height: size.height,
+              child: Transform.translate(
+                offset: new Offset(
+                    0.0, size.height * 0.0001),
+                key: _refreshIndicatorKey,
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    SliverFillRemaining(
                       child: Padding(
                           padding: EdgeInsets.all(15.0),
-                          child:  Directionality(
+                          child: Directionality(
                               textDirection: TextDirection.rtl,
                               child: Expanded(
                                 child: ListView(
@@ -192,798 +186,155 @@ class _EditCarState extends State<EditCar> with TickerProviderStateMixin {
                                       height: 25.0,
                                     ),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         Flexible(
-                                          child: TextField(
-                                            inputFormatters: [
-                                              production_year_formatter
-                                            ],
-                                            textDirection: TextDirection.rtl,
-                                            decoration: InputDecoration(
-                                                border: OutlineInputBorder(),
-                                                hintText: widget.pdate,
-                                                labelText: 'سال تولید'),
-                                            controller: production_year,
-                                          ),
+                                          flex: 1,
+                                          child: _textFormField(
+                                              size,
+                                              production_year,
+                                              'سال تولید خودرو',
+                                              1,
+                                              .075,
+                                              true,
+                                              1,
+                                              true,
+                                              production_year_formatter,
+                                              true),
                                         ),
                                         SizedBox(
                                           width: 10.0,
                                         ),
                                         Flexible(
-                                          child: TextField(
-                                            textDirection: TextDirection.rtl,
-                                            decoration: InputDecoration(
-                                                border: OutlineInputBorder(),
-                                                hintText: widget.vin_number,
-                                                labelText: " شماره vin"),
-                                            controller: vinnumber,
-                                          ),
+                                          flex: 1,
+                                          child: _textFormField(
+                                              size,
+                                              vinnumber,
+                                              'شماره VIN',
+                                              1,
+                                              .075,
+                                              true,
+                                              1,
+                                              true,
+                                              production_year_formatter,
+                                              false),
                                         )
                                       ],
                                     ),
                                     SizedBox(
                                       height: 25.0,
                                     ),
-                                    new Row(
-
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         Flexible(
-                                          child:Directionality(
-                                            textDirection: TextDirection.rtl,
-                                            child:
-                                            FutureBuilder<List<CarGroups>>(
-                                                future: fetchCarGroups(),
-                                                builder: (BuildContext
-                                                context,
-                                                    AsyncSnapshot<
-                                                        List<CarGroups>>
-                                                    snapshot) {
-                                                  if (!snapshot.hasData)
-                                                    return LinearProgressIndicator(
-                                                      backgroundColor:
-                                                      Colors.white,
-                                                      valueColor:
-                                                      new AlwaysStoppedAnimation<
-                                                          Color>(
-                                                          CustomColors
-                                                              .BlueDark),
-                                                    );
-                                                  return Container(
-                                                      decoration:
-                                                      BoxDecoration(
-                                                        borderRadius:
-                                                        BorderRadius
-                                                            .circular(
-                                                            10.0),
-                                                        border: Border.all(
-                                                            color: Colors
-                                                                .blueGrey,
-                                                            style:
-                                                            BorderStyle
-                                                                .solid,
-                                                            width: 0.80),
-                                                      ),
-                                                      child:
-                                                      DropdownButtonHideUnderline(
-                                                          child: DropdownButton<
-                                                              CarGroups>(
-                                                              icon:
-                                                              Padding(
-                                                                child: Icon(
-                                                                    Icons.drive_eta),
-                                                                padding:
-                                                                EdgeInsets.all(10.0),
-                                                              ),
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                  'IRANSans',
-                                                                  color: Colors
-                                                                      .black54),
-                                                              items: snapshot
-
-                                                                  .data
-                                                                  .map((carGroup) => DropdownMenuItem<
-                                                                  CarGroups>(
-                                                                child: Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                                                  children: <Widget>[
-                                                                    Padding(
-                                                                      padding: EdgeInsets.only(right: 30.0),
-                                                                      child: new Text(
-                                                                        carGroup.name,
-                                                                        style: TextStyle(
-                                                                          fontFamily: 'IRANSans',
-                                                                          fontSize: 12.0,
-                                                                        ),
-                                                                      ),
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                                value: carGroup,
-                                                              ))
-                                                                  .toList(),
-                                                              onChanged:
-                                                                  (CarGroups
-                                                              value) {
-                                                                setState(
-                                                                        () {
-                                                                      print(
-                                                                          carBrandId);
-                                                                      __typeOfCarFuture = fetchTypeOfCar(
-                                                                          carBrandId,
-                                                                          carGroupId);
-                                                                      __carModelFuture = fetchCarModel(
-                                                                          carBrandId,
-                                                                          carGroupId,
-                                                                          "0");
-                                                                      _carGroupHint =
-                                                                          value.name;
-                                                                      carGroupId =
-                                                                          value.id;
-                                                                    });
-                                                              },
-                                                              isExpanded:
-                                                              true,
-                                                              hint:
-                                                              Padding(
-                                                                padding:
-                                                                EdgeInsets.all(10.0),
-
-                                                                child:
-                                                                Text(
-                                                                  _carGroupHint,
-                                                                ),
-                                                              ))));
-                                                }),
-                                          ) ,
-                                        )
-                                        ,
+                                          child: ViewHelper.carGroupeFutureId((CarGroups value){
+                                            setState(
+                                                    () {
+                                                  print(
+                                                      carBrandId);
+                                                  __typeOfCarFuture = fetchTypeOfCar(
+                                                      carBrandId,
+                                                      carGroupId);
+                                                  __carModelFuture = fetchCarModel(
+                                                      carBrandId,
+                                                      carGroupId,
+                                                      "0");
+                                                  _carGroupHint =
+                                                      value.name;
+                                                  carGroupId =
+                                                      value.id;
+                                                });
+                                          }, _carGroupHint) ,
+                                        ),
                                         SizedBox(
                                           width: 10.0,
                                         ),
                                         Flexible(
-                                          child: Directionality(
-                                            textDirection: TextDirection.rtl,
-                                            child:
-                                            FutureBuilder<List<CarBrands>>(
-                                                future: fetchCarBrands(),
-                                                builder: (BuildContext
-                                                context,
-                                                    AsyncSnapshot<
-                                                        List<CarBrands>>
-                                                    snapshot) {
-                                                  if (!snapshot.hasData)
-                                                    return LinearProgressIndicator(
-                                                      backgroundColor:
-                                                      Colors.white,
-                                                      valueColor:
-                                                      new AlwaysStoppedAnimation<
-                                                          Color>(
-                                                          CustomColors
-                                                              .BlueDark),
-                                                    );
-                                                  return Container(
-                                                      decoration:
-                                                      BoxDecoration(
-                                                        borderRadius:
-                                                        BorderRadius
-                                                            .circular(
-                                                            10.0),
-                                                        border: Border.all(
-                                                            color: Colors
-                                                                .blueGrey,
-                                                            style:
-                                                            BorderStyle
-                                                                .solid,
-                                                            width: 0.80),
-                                                      ),
-                                                      child:
-                                                      DropdownButtonHideUnderline(
-                                                          child: DropdownButton<
-                                                              CarBrands>(
-                                                              icon:
-                                                              Padding(
-                                                                child: Icon(
-                                                                    Icons.branding_watermark),
-                                                                padding:
-                                                                EdgeInsets.all(10.0),
+                                          child: ViewHelper.carBrandFutureId((CarBrands value){
+                                            setState(
+                                                    () {
+                                                  _carBrandHint =
+                                                      value.name;
+                                                  carBrandId =
+                                                      value.id;
+                                                  __typeOfCarFuture = fetchTypeOfCar(
+                                                      carBrandId,
+                                                      carGroupId);
+                                                  print("addcar:"  +carBrandId+"  "+carGroupId );
 
-                                                              ),
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                  'IRANSans',
-                                                                  color: Colors
-                                                                      .black54),
-                                                              items: snapshot
-                                                                  .data
-                                                                  .map((carBrand) => DropdownMenuItem<
-                                                                  CarBrands>(
-                                                                child: Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                                                  children: <Widget>[
-                                                                    Padding(
-                                                                      padding: EdgeInsets.only(right: 30.0),
-                                                                      child: new Text(
-                                                                        carBrand.name,
-                                                                        style: TextStyle(
-                                                                          fontFamily: 'IRANSans',
-                                                                          fontSize: 12.0,
-                                                                        ),
-                                                                      ),
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                                value: carBrand,
-                                                              ))
-                                                                  .toList(),
-                                                              onChanged:
-                                                                  (CarBrands
-                                                              value) {
-                                                                setState(
-                                                                        () {
-                                                                      _carBrandHint =
-                                                                          value.name;
-                                                                      carBrandId =
-                                                                          value.id;
-                                                                      __typeOfCarFuture = fetchTypeOfCar(
-                                                                          carBrandId,
-                                                                          carGroupId);
-                                                                      print("addcar:"  +carBrandId+"  "+carGroupId );
+                                                  print(carBrandId);
+                                                  print(carGroupId);
 
-                                                                      print(carBrandId);
-                                                                      print(carGroupId);
-
-                                                                    });
-                                                              },
-                                                              isExpanded:
-                                                              true,
-                                                              hint:
-                                                              Padding(
-                                                                padding:
-                                                                EdgeInsets.all(10.0),
-                                                                child:
-                                                                Text(
-                                                                  _carBrandHint,
-                                                                ),
-                                                              ))));
-                                                }),
-                                          ),
+                                                });
+                                          }, _carBrandHint),
                                         )
                                       ],
                                     ),
                                     SizedBox(
                                       height: 25.0,
                                     ),
-                                    Directionality(
-                                      textDirection: TextDirection.rtl,
-                                      child:
-                                      FutureBuilder<List<TypeOfCar>>(
-                                          future: __typeOfCarFuture,
-                                          builder: (BuildContext
-                                          context,
-                                              AsyncSnapshot<
-                                                  List<TypeOfCar>>
-                                              snapshot) {
-                                            if (!snapshot.hasData)
-                                              return LinearProgressIndicator(
-                                                backgroundColor:
-                                                Colors.white,
-                                                valueColor:
-                                                new AlwaysStoppedAnimation<
-                                                    Color>(
-                                                    CustomColors
-                                                        .BlueDark),
-                                              );
-                                            return Container(
-                                                decoration:
-                                                BoxDecoration(
-                                                  borderRadius:
-                                                  BorderRadius
-                                                      .circular(
-                                                      10.0),
-                                                  border: Border.all(
-                                                      color: Colors
-                                                          .blueGrey,
-                                                      style:
-                                                      BorderStyle
-                                                          .solid,
-                                                      width: 0.80),
-                                                ),
-                                                child:
-                                                DropdownButtonHideUnderline(
-                                                    child: DropdownButton<
-                                                        TypeOfCar>(
-                                                        icon:
-                                                        Padding(
-
-                                                          child: Icon(
-                                                              Icons.branding_watermark),
-                                                          padding:
-                                                          EdgeInsets.all(10.0),
-                                                        ),
-                                                        style: TextStyle(
-                                                            fontFamily:
-                                                            'IRANSans',
-                                                            color: Colors
-                                                                .black54),
-                                                        items: snapshot
-                                                            .data
-                                                            .map((typeOfCar) => DropdownMenuItem<
-                                                            TypeOfCar>(
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.end,
-                                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                                            children: <Widget>[
-                                                              Padding(
-                                                                padding: EdgeInsets.only(right: 30.0),
-                                                                child: new Text(
-                                                                  typeOfCar.name,
-                                                                  style: TextStyle(
-                                                                    fontFamily: 'IRANSans',
-                                                                    fontSize: 12.0,
-                                                                  ),
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                          value: typeOfCar,
-                                                        ))
-                                                            .toList(),
-                                                        onChanged:
-                                                            (TypeOfCar
-                                                        value) {
-                                                          setState(
-                                                                  () {
-                                                                _typeOfCarHint =
-                                                                    value.name;
-                                                                print(
-                                                                    _typeOfCarHint);
-                                                                typeOfCarId =
-                                                                    value.id;
-                                                                __carModelFuture = fetchCarModel(
-                                                                    carBrandId,
-                                                                    carGroupId,
-                                                                    typeOfCarId);
-                                                              });
-                                                        },
-                                                        isExpanded:
-                                                        true,
-
-                                                        hint:
-                                                        Padding(
-                                                          padding:
-                                                          EdgeInsets.all(10.0),
-                                                          child:
-                                                          Text(
-                                                            _typeOfCarHint,
-                                                          ),
-                                                        ))));
-                                          }),
-                                    ),
-                                    SizedBox(
-                                      height: 25.0,
-                                    ),
-                                    Directionality(
-                                      textDirection: TextDirection.rtl,
-                                      child:
-                                      FutureBuilder<List<CarModel>>(
-                                          future: __carModelFuture,
-                                          builder: (BuildContext
-                                          context,
-                                              AsyncSnapshot<
-                                                  List<CarModel>>
-                                              snapshot) {
-                                            if (!snapshot.hasData)
-                                              return LinearProgressIndicator(
-                                                backgroundColor:
-                                                Colors.white,
-                                                valueColor:
-                                                new AlwaysStoppedAnimation<
-                                                    Color>(
-                                                    CustomColors
-                                                        .BlueDark),
-                                              );
-                                            return Container(
-                                                decoration:
-                                                BoxDecoration(
-                                                  borderRadius:
-                                                  BorderRadius
-                                                      .circular(
-                                                      10.0),
-                                                  border: Border.all(
-                                                      color: Colors
-                                                          .blueGrey,
-                                                      style:
-                                                      BorderStyle
-                                                          .solid,
-                                                      width: 0.80),
-                                                ),
-                                                child:
-                                                DropdownButtonHideUnderline(
-                                                    child: DropdownButton<
-                                                        CarModel>(
-                                                        icon:
-                                                        Padding(
-                                                          child: Icon(
-                                                              Icons.branding_watermark),
-                                                          padding:
-                                                          EdgeInsets.all(10.0),
-                                                        ),
-                                                        style: TextStyle(
-                                                            fontFamily:
-
-                                                            'IRANSans',
-                                                            color: Colors
-                                                                .black54),
-                                                        items: snapshot
-                                                            .data
-                                                            .map((carModel) => DropdownMenuItem<
-                                                            CarModel>(
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.end,
-                                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                                            children: <Widget>[
-                                                              Padding(
-                                                                padding: EdgeInsets.only(right: 30.0),
-                                                                child: new Text(
-                                                                  carModel.name,
-                                                                  style: TextStyle(
-                                                                    fontFamily: 'IRANSans',
-                                                                    fontSize: 12.0,
-                                                                  ),
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                          value: carModel,
-                                                        ))
-                                                            .toList(),
-                                                        onChanged:
-                                                            (CarModel
-                                                        value) {
-                                                          setState(
-                                                                  () {
-                                                                _carModelHint =
-                                                                    value.name;
-                                                                print(
-                                                                    _carModelHint);
-                                                                carModelId =
-                                                                    value.id;
-                                                              });
-                                                        },
-                                                        isExpanded:
-                                                        true,
-                                                        hint:
-                                                        Padding(
-                                                          padding:
-                                                          EdgeInsets.all(10.0),
-                                                          child:
-                                                          Text(
-                                                            _carModelHint,
-                                                          ),
-                                                        ))));
-                                          }),
-                                    ),
-                                    SizedBox(
-                                      height: 25.0,
-                                    ),
-                                    Directionality(
-
-                                      textDirection: TextDirection.rtl,
-                                      child:
-                                      FutureBuilder<List<CarColors>>(
-                                          future: fetchCarColors(),
-                                          builder: (BuildContext
-                                          context,
-                                              AsyncSnapshot<
-                                                  List<CarColors>>
-                                              snapshot) {
-                                            print("colors : "+snapshot.data.toString());
-                                            if (!snapshot.hasData)
-                                              return LinearProgressIndicator(
-                                                backgroundColor:
-                                                Colors.white,
-                                                valueColor:
-                                                new AlwaysStoppedAnimation<
-                                                    Color>(
-                                                    CustomColors
-                                                        .BlueDark),
-                                              );
-                                            return Container(
-                                                decoration:
-                                                BoxDecoration(
-                                                  borderRadius:
-                                                  BorderRadius
-                                                      .circular(
-                                                      10.0),
-                                                  border: Border.all(
-                                                      color: Colors
-                                                          .blueGrey,
-                                                      style:
-                                                      BorderStyle
-                                                          .solid,
-                                                      width: 0.80),
-                                                ),
-                                                child:
-                                                DropdownButtonHideUnderline(
-                                                    child: DropdownButton<
-                                                        CarColors>(
-                                                        icon:
-                                                        Padding(
-                                                          child: Icon(
-                                                              Icons.branding_watermark),
-                                                          padding:
-                                                          EdgeInsets.all(10.0),
-                                                        ),
-                                                        style: TextStyle(
-                                                            fontFamily:
-                                                            'IRANSans',
-                                                            color: Colors
-                                                                .black54),
-                                                        items: snapshot
-                                                            .data
-                                                            .map((carcolor) => DropdownMenuItem<
-                                                            CarColors>(
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.end,
-                                                            crossAxisAlignment: CrossAxisAlignment.end,
-
-                                                            children: <Widget>[
-                                                              Padding(
-                                                                padding: EdgeInsets.only(right: 30.0),
-                                                                child: new Text(
-//                                                                  carcolor.id == widget.carcolorid ? _carColorHint =  carcolor.name : carcolor.name
-
-                                                                  carcolor.name,
-                                                                  style: TextStyle(
-                                                                    fontFamily: 'IRANSans',
-                                                                    fontSize: 12.0,
-                                                                  ),
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                          value: carcolor,
-                                                        ))
-                                                            .toList(),
-                                                        onChanged:
-                                                            (CarColors
-                                                        value) {
-                                                          setState(
-                                                                  () {
-                                                                _carColorHint =
-                                                                    value.name;
-                                                                carColorId =
-                                                                    value.id;
-                                                                print(_carColorHint);
-                                                                print(carColorId);
-
-                                                              });
-                                                        },
-                                                        isExpanded:
-                                                        true,
-                                                        hint:
-                                                        Padding(
-                                                          padding:
-                                                          EdgeInsets.all(10.0),
-                                                          child:
-                                                          Text(
-//                                                            colorvalue.id == widget.carcolorid ? colorvalue.name :
-                                                            _carColorHint
-                                                          ),
-                                                        ))));
-                                          }),
-                                    ),
-                                    SizedBox(
-                                      height: 25.0,
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(right: 50 ,left: 50),
-                                      decoration: BoxDecoration(
-                                          border: Border.all(color: Colors.blueAccent)
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Expanded(
-                                            flex: 2,
-                                            child: Container(
-                                              width: MediaQuery.of(context).size.width/6,
-                                              height:87,
-                                              margin: EdgeInsets.only(top: 10,bottom: 10,right: 10),
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(color: Colors.blueAccent)
-                                              ),
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Text("ایران",
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.w600,
-                                                        fontFamily: 'IRANSans'),
-                                                  ),
-                                                  TextField(
-                                                    textAlign: TextAlign.center,
-                                                    style:TextStyle(
-                                                        fontSize: 15,
-                                                        fontWeight: FontWeight.w600,
-                                                        fontFamily: 'IRANSans'),
-                                                    textDirection: TextDirection.rtl,
-                                                    decoration: InputDecoration(
-                                                      border: OutlineInputBorder(),
-                                                      hintText:  plateno[3].split(']')[0],
-                                                    ),
-                                                    controller: platenumber4,
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 3,
-                                            child: Container(
-                                              width: MediaQuery.of(context).size.width/6,
-                                              height:87,
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(color: Colors.blueAccent)
-                                              ),
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Text(""
-                                                  ),
-                                                  TextField(
-                                                    textAlign: TextAlign.center,
-                                                    style:TextStyle(
-                                                        fontSize: 22,
-                                                        fontWeight: FontWeight.w600,
-                                                        fontFamily: 'IRANSans'),
-                                                    textDirection: TextDirection.rtl,
-                                                    decoration: InputDecoration(
-                                                      hintText:  plateno[2],
-                                                    ),
-                                                    controller: platenumber3,
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 3,
-                                            child:  Container(
-                                              width: MediaQuery.of(context).size.width/6,
-                                              height:87,
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(color: Colors.blueAccent)
-                                              ),
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Text(""
-                                                  ),
-                                                  TextField(
-                                                    textAlign: TextAlign.center,
-                                                    style:TextStyle(
-                                                        fontSize: 22,
-                                                        fontWeight: FontWeight.w600,
-                                                        fontFamily: 'IRANSans'),
-                                                    textDirection: TextDirection.rtl,
-                                                    decoration: InputDecoration(
-                                                      hintText:  plateno[1],
-                                                    ),
-                                                    controller: platenumber2,
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 3,
-                                            child: Container(
-                                              width: MediaQuery.of(context).size.width/6,
-                                              height:87,
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(color: Colors.blueAccent)
-                                              ),
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Text(""
-                                                  ),
-                                                  TextField(
-                                                    textAlign: TextAlign.center,
-                                                    style:TextStyle(
-                                                        fontSize: 22,
-                                                        fontWeight: FontWeight.w600,
-                                                        fontFamily: 'IRANSans'),
-                                                    textDirection: TextDirection.rtl,
-                                                    decoration: InputDecoration(
-                                                      hintText:  plateno[0].split('[')[1],
-                                                    ),
-                                                    controller: platenumber1,
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 1,
-                                            child: Container(
-                                                height: 86,
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(color: Colors.blueAccent)
-                                                ),
-                                                child: Image.asset("images/carplate.jpeg" ,)
-                                            ),
-                                          ),
-
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 25.0,
-                                    ),
-                                    GestureDetector(
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 8),
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                                            boxShadow: <BoxShadow>[
-                                              BoxShadow(
-                                                  color: Colors.grey.shade200,
-                                                  offset: Offset(2, 4),
-                                                  blurRadius: 5,
-                                                  spreadRadius: 2)
-                                            ],
-                                            gradient: LinearGradient(
-                                                begin: Alignment.centerLeft,
-                                                end: Alignment.centerRight,
-                                                colors: [Colors.green, Colors.green[500]])),
-                                        child: Text(
-                                          ' ثبت',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.white,
-                                              fontFamily: 'IRANSans'),
-                                        ),
-                                      ),
-                                      onTap: (){
-                                        List<String> plate = [];
-                                        plate.add( platenumber1.text );
-                                        plate.add( platenumber2.text );
-                                        plate.add( platenumber3.text );
-                                        plate.add( platenumber4.text );
-                                        addMyCar(
-                                            widget.carId,
-                                            _customer_id,
-                                            carModelId,
+                                    ViewHelper.typeOfCarFutureId((TypeOfCar value){
+                                      setState(() {
+                                        _typeOfCarHint =
+                                            value
+                                                .name;
+                                        print(
+                                            _typeOfCarHint);
+                                        typeOfCarId =
+                                            value.id;
+                                        __carModelFuture = fetchCarModel(
                                             carBrandId,
                                             carGroupId,
-                                            typeOfCarId,
-                                            plate.toString(),
-                                            carColorId,
-                                            production_year.text.toString(),
-                                            vinnumber.text.toString()
-                                        );
-                                        Navigator.of(context)
-                                            .pushReplacement(PageTransition(child: carsList(
-                                          title: 'تتیر',
-                                          name: widget.name.toString(),
-                                          lastName: widget.lastName.toString(),
-                                          customerID: widget.customerID.toString(),
-                                        )));
-                                      },
-                                    )
+                                            typeOfCarId);
+                                      });
+                                    }, _typeOfCarHint , __typeOfCarFuture),
+                                    SizedBox(
+                                      height: 25.0,
+                                    ),
+                                    _buildCarModelId(),
+                                    SizedBox(
+                                      height: 25.0,
+                                    ),
+                                    ViewHelper.colorFutureId((CarColors value){
+                                      setState(() {
+                                        _carColorHint =
+                                            value
+                                                .name;
+                                        carColorId =
+                                            value.id;
+                                        print(
+                                            _carColorHint);
+                                        print(
+                                            carColorId);
+                                      });
+                                    } , _carColorHint),
+                                    // _buildCarColorId(),
+                                    SizedBox(
+                                      height: 15.0,
+                                    ),
+                                    ViewHelper.pelak(
+                                        context,
+                                        platenumber1,
+                                        platenumber2,
+                                        platenumber3,
+                                        platenumber4),
+                                    SizedBox(
+                                      height: 15.0,
+                                    ),
+                                    _acceptContainer(),
+                                    SizedBox(
+                                      height: 55.0,
+                                    ),
                                   ],
                                 ),
                               ))),
                     ),
-                    ],
-                  ),
-                )
-              ],
+                  ],
+                ),
+              ),
             ),
 //            ),
             bottomNavigationBar: BottomNavigationBar(
@@ -1002,11 +353,10 @@ class _EditCarState extends State<EditCar> with TickerProviderStateMixin {
                     print(widget.name);
                     Navigator.of(context).pushReplacement(PageTransition(
                         child: carsList(
-                          title: 'qwq',
-                          name: widget.name,
-                          lastName: widget.lastName,
-                            customerID: widget.customerID
-                        ),
+                            title: 'qwq',
+                            name: widget.name,
+                            lastName: widget.lastName,
+                            customerID: widget.customerID),
                         type: PageTransitionType.upToDown));
                   }
                 },
@@ -1019,7 +369,7 @@ class _EditCarState extends State<EditCar> with TickerProviderStateMixin {
                     title: Text(
                       'خدمات',
                       style:
-                      TextStyle(fontFamily: 'IRANSans', color: Colors.grey),
+                          TextStyle(fontFamily: 'IRANSans', color: Colors.grey),
                     ),
                   ),
                   BottomNavigationBarItem(
@@ -1035,11 +385,203 @@ class _EditCarState extends State<EditCar> with TickerProviderStateMixin {
                   ),
                 ])));
   }
+
+
+  Widget _buildCarModelId(){
+    return FutureBuilder<List<CarModel>>(
+        future: __carModelFuture,
+        builder: (BuildContext context,
+            AsyncSnapshot<List<CarModel>>
+            snapshot) {
+          if (!snapshot.hasData)
+            return LinearProgressIndicator(
+              backgroundColor: Colors.white,
+              valueColor:
+              new AlwaysStoppedAnimation<
+                  Color>(
+                  CustomColors
+                      .BlueDark),
+            );
+          return Container(
+              decoration: BoxDecoration(
+                borderRadius:
+                BorderRadius.circular(
+                    10.0),
+                border: Border.all(
+                    color: Colors.blueGrey,
+                    style:
+                    BorderStyle.solid,
+                    width: 0.80),
+              ),
+              child:
+              DropdownButtonHideUnderline(
+                  child: DropdownButton<
+                      CarModel>(
+                      icon: Padding(
+                        child: Icon(Icons
+                            .branding_watermark),
+                        padding:
+                        EdgeInsets
+                            .all(
+                            10.0),
+                      ),
+                      style: TextStyle(
+                          fontFamily:
+                          'IRANSans',
+                          color: Colors
+                              .black54),
+                      items: snapshot
+                          .data
+                          .map((carModel) =>
+                          DropdownMenuItem<
+                              CarModel>(
+                            child:
+                            Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.end,
+                              crossAxisAlignment:
+                              CrossAxisAlignment.end,
+                              children: <
+                                  Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(right: 30.0),
+                                  child: new Text(
+                                    carModel.name,
+                                    style: TextStyle(
+                                      fontFamily: 'IRANSans',
+                                      fontSize: 12.0,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                            value:
+                            carModel,
+                          ))
+                          .toList(),
+                      onChanged:
+                          (CarModel
+                      value) {
+                        setState(() {
+                          _carModelHint =
+                              value
+                                  .name;
+                          print(
+                              _carModelHint);
+                          carModelId =
+                              value.id;
+                        });
+                      },
+                      isExpanded: true,
+                      hint: Padding(
+                        padding:
+                        EdgeInsets
+                            .all(
+                            10.0),
+                        child: Text(
+                          _carModelHint,
+                        ),
+                      ))));
+        });
+  }
+
+  Widget _textFormField(Size size, TextEditingController controller, lable,
+      double w, double h, bool numeric, int maxLines, bool enable,
+      [mask, maskEnable]) {
+    return Container(
+      height: size.height * h,
+      width: size.width * w,
+      color: Colors.white,
+      child: TextField(
+        textInputAction: TextInputAction.done,
+        inputFormatters: (maskEnable) ? [mask] : null,
+        enabled: enable,
+        textAlign: TextAlign.center,
+        keyboardType: (numeric) ? TextInputType.number : TextInputType.text,
+        maxLines: maxLines,
+        controller: controller,
+        decoration: InputDecoration(
+          fillColor: Colors.grey[50],
+          enabledBorder: new OutlineInputBorder(
+            borderRadius: new BorderRadius.circular(6.0),
+            borderSide: new BorderSide(
+              color: Colors.black45,
+            ),
+          ),
+          disabledBorder: new OutlineInputBorder(
+            borderRadius: new BorderRadius.circular(25.0),
+            borderSide: new BorderSide(
+              color: Color(0xff290d66),
+            ),
+          ),
+          filled: true,
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+              borderSide: BorderSide(color: Colors.deepOrangeAccent)),
+          labelText: lable,
+          labelStyle: TextStyle(
+              fontFamily: 'IRANSans', color: Colors.black, fontSize: 14.0),
+        ),
+      ),
+    );
+  }
+
+  Widget _acceptContainer() {
+    return GestureDetector(
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 8),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: Colors.grey.shade200,
+                  offset: Offset(2, 4),
+                  blurRadius: 5,
+                  spreadRadius: 2)
+            ],
+            gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [Colors.green, Colors.green[500]])),
+        child: Text(
+          ' ثبت',
+          style: TextStyle(
+              fontSize: 14, color: Colors.white, fontFamily: 'IRANSans'),
+        ),
+      ),
+      onTap: () {
+        List<String> plate = [];
+        plate.add(platenumber1.text);
+        plate.add(platenumber2.text);
+        plate.add(platenumber3.text);
+        plate.add(platenumber4.text);
+        addMyCar(
+            widget.carId,
+            _customer_id,
+            carModelId,
+            carBrandId,
+            carGroupId,
+            typeOfCarId,
+            plate.toString(),
+            carColorId,
+            production_year.text.toString(),
+            vinnumber.text.toString());
+        Navigator.of(context).pushReplacement(PageTransition(
+            child: carsList(
+          title: 'تتیر',
+          name: widget.name.toString(),
+          lastName: widget.lastName.toString(),
+          customerID: widget.customerID.toString(),
+        )));
+      },
+    );
+  }
 }
 
-Future<void> addMyCar(carId , _customer_id,carModelId,carBrandId,carGroupId,typeOfCarId,platenumber,
-    carColorId,production_year,vinnumber) async {
-  print("_customer_id" +_customer_id);
+Future<void> addMyCar(carId, _customer_id, carModelId, carBrandId, carGroupId,
+    typeOfCarId, platenumber, carColorId, production_year, vinnumber) async {
+  print("_customer_id" + _customer_id);
   print(carModelId);
   print("carBrandId" + carBrandId);
   print(typeOfCarId);
@@ -1052,14 +594,14 @@ Future<void> addMyCar(carId , _customer_id,carModelId,carBrandId,carGroupId,type
       CustomStrings.API_ROOT + 'Customers/Cars/CustomerCars.php', {
     'api_type': 'quickEdit',
     'customer_id': _customer_id,
-    'customer_car_id': carId ,
+    'customer_car_id': carId,
     'car_model_id': carModelId,
     'car_brand_id': carBrandId,
     'car_group_id': carGroupId,
     'car_name_id': typeOfCarId,
-    'plaque' : platenumber,
-    'color_id' : carColorId,
-    'production_date' : production_year,
+    'plaque': platenumber,
+    'color_id': carColorId,
+    'production_date': production_year,
     'vin_number': vinnumber
   });
   print(addcar.content().toString());

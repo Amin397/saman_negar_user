@@ -181,7 +181,7 @@ class _carsListState extends State<carsList> with TickerProviderStateMixin {
                                           actionExtentRatio: 0.25,
                                           child: AwesomeListItem(
                                               title: snapShot.data[index]
-                                                  ['title'] == null ? "no name ": snapShot.data[index]['title'],
+                                                  ['title'] == null ? "بدون اسم ": snapShot.data[index]['title'],
                                               content: snapShot.data[index]
                                                   ['text']),
                                           actions: <Widget>[],
@@ -192,10 +192,11 @@ class _carsListState extends State<carsList> with TickerProviderStateMixin {
                                               icon: Icons.edit,
                                               onTap: () {
                                                 print( snapShot.data[index]['plaque'] );
+                                                print( snapShot.data[index]['customer_car_id'] );
+                                                print( snapShot.data[index]['color_id'] );
                                                 Navigator.of(context)
                                                     .pushReplacement(PageTransition(
                                                     child: EditCar(
-                                                      title: 'تتیر',
                                                       name: widget.name,
                                                       lastName: widget.lastName,
                                                       customerID: widget.customerID,
@@ -211,7 +212,6 @@ class _carsListState extends State<carsList> with TickerProviderStateMixin {
                                                       carNameId : snapShot.data[index]['car_name_id']
                                                     ),
                                                     type: PageTransitionType.fade));
-
                                               },
                                             ),
                                             new IconSlideAction(
@@ -220,28 +220,28 @@ class _carsListState extends State<carsList> with TickerProviderStateMixin {
                                               icon: Icons.delete,
                                               onTap: () async {
                                                 showLoadingDialog();
-                                                var res = await makePostRequest(
+                                                var res = await makePostRequestAmin(
                                                     '${CustomStrings.API_ROOT}Customers/Cars/CustomerCars.php',
                                                     {
                                                       'customer_car_id': snapShot
                                                               .data[index]
                                                           ['customer_car_id'],
                                                       'api_type': 'delete_app'
+                                                    }).then((value) {
+                                                  if (value['result'] == 'done') {
+                                                    setState(() {
+                                                      cars = fetchCars();
                                                     });
-                                                res = res.json();
-                                                if (res['result'] == 'done') {
-                                                  setState(() {
-                                                    cars = fetchCars();
-                                                  });
-                                                  hideLoadingDialog();
-                                                } else {
-                                                  hideLoadingDialog();
-                                                  showRichDialog(context,
-                                                      title: 'کاربر گرامی!',
-                                                      text:
-                                                          'با عرض پوزش عملیات مورد نظر شما تکمیل نشد٬ لطفا دوباره تلاش کنید و در صورت تکرار این خطا با پشتیبانی تماس حاصل فرمایید',
-                                                      type: 0);
-                                                }
+                                                    hideLoadingDialog();
+                                                  } else {
+                                                    hideLoadingDialog();
+                                                    showRichDialog(context,
+                                                        title: 'کاربر گرامی!',
+                                                        text:
+                                                        'با عرض پوزش عملیات مورد نظر شما تکمیل نشد٬ لطفا دوباره تلاش کنید و در صورت تکرار این خطا با پشتیبانی تماس حاصل فرمایید',
+                                                        type: 0);
+                                                  }
+                                                });
                                               },
                                             ),
                                           ],

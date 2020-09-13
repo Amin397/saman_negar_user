@@ -46,6 +46,13 @@ Future<dynamic> makePostRequest(String API, Map params) async {
   return await Requests.post(API, body: params);
 }
 
+Future<dynamic> makePostRequestAmin(String API,Map params) async {
+  params['token'] = '199d2addf2da5116b1accafcf4685f128df2ca69';
+  var res = await Requests.post(API, body: params);
+  print(res.content());
+  return res.json();
+}
+
 Future<dynamic> makenewPostRequest(String API, Map params) async {
   params['api-key'] = '199d2addf2da5116b1accafcf4685f128df2ca69';
   return await Requests.post(API, body: params);
