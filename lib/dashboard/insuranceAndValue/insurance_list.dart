@@ -38,8 +38,6 @@ class InsuranceList extends StatefulWidget {
    InsuranceList({Key key, this.title, this.name, this.lastName, this.customerID})
        : super(key: key);
 
-
-
   @override
   _InsuranceListState createState() => _InsuranceListState();
 }
@@ -58,10 +56,10 @@ class _InsuranceListState extends State<InsuranceList> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    insurance = fetchInsurance();
     menuController = new MenuController(
       vsync: this,
     )..addListener(() => setState(() {}));
+    insurance = fetchInsurance();
   }
 
   @override
@@ -166,13 +164,13 @@ class _InsuranceListState extends State<InsuranceList> with TickerProviderStateM
                                                 ),
                                               ),
                                             ],
-                                          ));
+                                          )
+                                      );
                                     }
                                     return ListView.builder(
                                       itemCount: snapShot.data.length,
                                       itemBuilder: (context, index) {
-                                        dismissControllers
-                                            .add(SlidableController());
+                                        dismissControllers.add(SlidableController());
                                         final dismiss = SlidableController();
                                         final key = new GlobalKey();
                                         return Slidable(
@@ -183,12 +181,15 @@ class _InsuranceListState extends State<InsuranceList> with TickerProviderStateM
                                           actionExtentRatio: 0.25,
                                           child: AwesomeListItem(
                                               title: snapShot.data[index]
-                                              ['title'] == null ? "بدون اسم ": snapShot.data[index]['title'],
-                                              content: snapShot.data[index]
-                                              ['text']),
+                                              ['insurance_number'] == null ? "بدون اسم ": 'شماره بیمه نامه: ${snapShot.data[index]['insurance_number']} ',
+                                              content: 'تاریخ شروع بیمه نامه: ${snapShot.data[index]['start_date']} \n'
+                                                  'تاریخ اتمام بیمه نامه: ${snapShot.data[index]['end_date']}\n'
+                                                  'سقف میزان پراخت خسارت: ${snapShot.data[index]['max_payment']}ريال\n'
+                                                  'سقف میزان پراخت خسارت جانی: ${snapShot.data[index]['max_jani']}ريال\n'
+                                                  'شماره پلاک: ${snapShot.data[index]['plaque']}'),
                                           actions: <Widget>[],
                                           secondaryActions: <Widget>[
-                                            new IconSlideAction(
+                                            IconSlideAction(
                                               caption: 'ویرایش',
                                               color: Colors.green,
                                               icon: Icons.edit,
@@ -213,14 +214,14 @@ class _InsuranceListState extends State<InsuranceList> with TickerProviderStateM
                                                 //     type: PageTransitionType.fade));
                                               },
                                             ),
-                                            new IconSlideAction(
+                                            IconSlideAction(
                                               caption: 'حذف بیمه',
                                               color: Colors.red,
                                               icon: Icons.delete,
                                               onTap: () async {
                                                 showLoadingDialog();
-                                                var res = await makePostRequestAmin(
-                                                    '${CustomStrings.API_ROOT}Customers/Insurances/CustomerInsurances.php',
+                                                var res = await makePostRequest(
+                                                    '${CustomStrings.API_INSURANCE}',
                                                     {
                                                       'customer_id': snapShot
                                                           .data[index]
@@ -325,11 +326,10 @@ class _InsuranceListState extends State<InsuranceList> with TickerProviderStateM
   }
 
   Future<dynamic> fetchInsurance() async {
-    var data = await makePostRequest('${CustomStrings.CUSTOMERS}Customers/Insurances/CustomerInsurances.php', {
+    var data = await makePostRequest('${CustomStrings.API_INSURANCE}', {
       'customer_id': widget.customerID,
       'api_type': 'customerInsurances',
     });
-    print(data.json().toString());
     return data.json();
   }
 }

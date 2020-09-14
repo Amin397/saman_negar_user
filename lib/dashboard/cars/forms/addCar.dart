@@ -127,7 +127,6 @@ class _AddCarState extends State<AddCar> with TickerProviderStateMixin {
   @override
   Widget page(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
     return Directionality(
         textDirection: TextDirection.rtl,
         child: new Scaffold(
@@ -279,19 +278,11 @@ class _AddCarState extends State<AddCar> with TickerProviderStateMixin {
                                                                             value) {
                                                                       setState(
                                                                           () {
-                                                                        print(
-                                                                            carBrandId);
-                                                                        __typeOfCarFuture = fetchTypeOfCar(
-                                                                            carBrandId,
-                                                                            carGroupId);
-                                                                        __carModelFuture = fetchCarModel(
-                                                                            carBrandId,
-                                                                            carGroupId,
-                                                                            "0");
-                                                                        _carGroupHint =
-                                                                            value.name;
-                                                                        carGroupId =
-                                                                            value.id;
+                                                                        print(carBrandId);
+                                                                        __typeOfCarFuture = fetchTypeOfCar(carBrandId,carGroupId);
+                                                                        __carModelFuture = fetchCarModel(carBrandId,carGroupId,"0");
+                                                                        _carGroupHint = value.name;
+                                                                        carGroupId = value.id;
                                                                       });
                                                                     },
                                                                     isExpanded:
