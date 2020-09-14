@@ -5,6 +5,7 @@ import 'package:samannegarusers/dashboard/addresses/addressesList.dart';
 import 'package:samannegarusers/dashboard/cars/carsList.dart';
 import 'package:samannegarusers/dashboard/fab.dart';
 import 'package:samannegarusers/dashboard/insuranceAndValue/insuranceAndValue.dart';
+import 'package:samannegarusers/dashboard/insuranceAndValue/insurance_list.dart';
 import 'package:samannegarusers/dashboard/ui/menu.dart';
 import 'package:samannegarusers/dashboard/plugins/zoom_scaffold.dart';
 import 'package:samannegarusers/dashboard/util.dart';
@@ -243,7 +244,17 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                               'بیمه های من',
                               'بهترین و نزدیک ترین مراکز خدمات',
                               Icons.verified_user,
-                              Colors.green),
+                              Colors.green,onTap: (){
+                            Navigator.of(context)
+                                .pushReplacement(PageTransition(
+                                child: InsuranceList(
+                                  title: 'تتیر',
+                                  name: _name,
+                                  lastName: _lastName,
+                                  customerID: _customer_id,
+                                ),
+                                type: PageTransitionType.fade));
+                          }),
                           __item('آدرس های من', 'قطعات اصلی با بهترین قیمت',
                               Icons.local_post_office, Colors.blue, onTap: () {
                             Navigator.of(context)

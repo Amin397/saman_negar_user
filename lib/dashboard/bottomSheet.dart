@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-
-import 'package:samannegarusers/dashboard/home.dart';
 import 'package:samannegarusers/request/screens/home_screen.dart';
-//import 'package:samannegarusers/request/main.dart';
 import 'cars/forms/addCar.dart';
+import 'insuranceAndValue/forms/add_insurance.dart';
 import 'util.dart';
 
 class Modal {
@@ -144,10 +142,14 @@ class Modal {
     );
   }
 
+
+
  carListBottomSheet(BuildContext context) {
-
    Navigator.of(context).push(PageTransition(child: AddCar(), type: PageTransitionType.downToUp));
-
  }
+
+  insuranceListBottomSheet(BuildContext context) {
+    Navigator.of(context).push(PageTransition(child: AddInsurance(), type: PageTransitionType.downToUp));
+  }
 
 }
