@@ -103,13 +103,8 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
   TextEditingController production_year = new TextEditingController();
   TextEditingController vinnumber = new TextEditingController();
 
-  MaskTextInputFormatter production_year_formatter =
-  new MaskTextInputFormatter(mask: '13a#', filter: {
-    '1': new RegExp(r'1'),
-    '3': new RegExp(r'3'),
-    'a': new RegExp(r'[4-9]'),
-    '#': new RegExp(r'[0-9]'),
-  });
+  MaskTextInputFormatter max_khesarat_formatter =
+  new MaskTextInputFormatter(mask: '###,###,###,###,###,###,###,###', filter: {"#": RegExp(r'[0-9]')});
 
   String carGroupId = '0';
   String _carGroupHint = 'لطفا گروه خودرو را انتخاب نمایید';
@@ -161,13 +156,13 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
                                             child: _textFormField(
                                                 size,
                                                 vinnumber,
-                                                'شماره VIN',
+                                                'سقف میزان پرداخت خسارت جانی (ريال)',
                                                 1,
                                                 .075,
                                                 true,
                                                 1,
                                                 true,
-                                                production_year_formatter,
+                                                max_khesarat_formatter,
                                                 false),
                                           )
                                         ],
@@ -178,13 +173,13 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
                                       _textFormField(
                                           size,
                                           production_year,
-                                          'سال تولید خودرو',
+                                          'سقف میزان پرداخت خسارت (ريال)',
                                           1,
                                           .075,
                                           true,
                                           1,
                                           true,
-                                          production_year_formatter,
+                                          max_khesarat_formatter,
                                           true),
                                       SizedBox(
                                         height: 20.0,
@@ -737,7 +732,9 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
                                       _submitButton(size),
                                     ],
                                   ),
-                                ))),
+                                )
+                            )
+                        ),
                       ),
                     ],
                   ),
@@ -810,7 +807,7 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
               borderRadius: BorderRadius.all(
                   Radius.circular(5))),
           child: Text(
-            'ثبت خودرو',
+            'ثبت بیمه نامه',
             style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
