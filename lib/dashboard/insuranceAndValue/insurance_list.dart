@@ -172,8 +172,7 @@ class _InsuranceListState extends State<InsuranceList>
                                     return ListView.builder(
                                       itemCount: snapShot.data.length,
                                       itemBuilder: (context, index) {
-                                        dismissControllers
-                                            .add(SlidableController());
+                                        dismissControllers.add(SlidableController());
                                         final dismiss = SlidableController();
                                         final key = new GlobalKey();
                                         return Slidable(
@@ -184,8 +183,8 @@ class _InsuranceListState extends State<InsuranceList>
                                           actionExtentRatio: 0.25,
                                           child: AwesomeListItem(
                                               title: snapShot.data[index][
-                                                          'insurance_number'] ==
-                                                      null
+                                              'insurance_number'] ==
+                                                  null
                                                   ? "بدون اسم "
                                                   : 'شماره بیمه نامه: ${snapShot.data[index]['insurance_number']} ',
                                               content:
@@ -194,7 +193,8 @@ class _InsuranceListState extends State<InsuranceList>
                                                   'سقف میزان پراخت خسارت: ${snapShot.data[index]['max_payment']}ريال\n'
                                                   'سقف میزان پراخت خسارت جانی: ${snapShot.data[index]['max_jani']}ريال\n'
                                                   'شماره پلاک: ${snapShot.data[index]['plaque']}\n'
-                                                      'شرکت بیمه: ${snapShot.data[index]['companyName']}'),
+                                                      'شرکت بیمه: ${snapShot.data[index]['companyName']}\n'
+                                                      'شعبه شرکت بیمه: ${snapShot.data[index]['typeofInsurance']}'),
                                           actions: <Widget>[],
                                           secondaryActions: <Widget>[
                                             IconSlideAction(

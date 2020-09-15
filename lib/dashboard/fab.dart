@@ -45,6 +45,7 @@ FloatingActionButton customFab(context) {
 
 FloatingActionButton addCarFab(context) {
   Modal modal = Modal();
+  print('car fab');
 
   return FloatingActionButton(
     onPressed: () {
@@ -83,6 +84,7 @@ FloatingActionButton addCarFab(context) {
 
 FloatingActionButton addInsuranceFab(context) {
   Modal modal = Modal();
+  print('insurance fab');
 
   return FloatingActionButton(
     onPressed: () {

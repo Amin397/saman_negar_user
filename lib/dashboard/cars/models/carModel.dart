@@ -4,6 +4,7 @@ import 'package:samannegarusers/funcs.dart';
 import 'package:samannegarusers/login/constants.dart';
 
 class CarModel {
+
   final String id;
   final String name;
 

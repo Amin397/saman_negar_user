@@ -304,119 +304,117 @@ class _AddCarState extends State<AddCar> with TickerProviderStateMixin {
                                             width: 10.0,
                                           ),
                                           Flexible(
-                                            child: Directionality(
-                                              textDirection: TextDirection.rtl,
-                                              child: FutureBuilder<
-                                                      List<CarBrands>>(
-                                                  future: fetchCarBrands(),
-                                                  builder: (BuildContext
-                                                          context,
-                                                      AsyncSnapshot<
-                                                              List<CarBrands>>
-                                                          snapshot) {
-                                                    if (!snapshot.hasData)
-                                                      return LinearProgressIndicator(
-                                                        backgroundColor:
-                                                            Colors.white,
-                                                        valueColor:
-                                                            new AlwaysStoppedAnimation<
-                                                                    Color>(
-                                                                CustomColors
-                                                                    .BlueDark),
-                                                      );
-                                                    return Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      10.0),
-                                                          border: Border.all(
-                                                              color: Colors
-                                                                  .blueGrey,
-                                                              style: BorderStyle
-                                                                  .solid,
-                                                              width: 0.80),
-                                                        ),
-                                                        child:
-                                                            DropdownButtonHideUnderline(
-                                                                child: DropdownButton<
-                                                                        CarBrands>(
-                                                                    icon:
-                                                                        Padding(
-                                                                      child: Icon(
-                                                                          Icons
-                                                                              .branding_watermark),
-                                                                      padding:
-                                                                          EdgeInsets.all(
-                                                                              10.0),
-                                                                    ),
-                                                                    style: TextStyle(
-                                                                        fontFamily:
-                                                                            'IRANSans',
-                                                                        color: Colors
-                                                                            .black54),
-                                                                    items: snapshot
-                                                                        .data
-                                                                        .map((carBrand) =>
-                                                                            DropdownMenuItem<
-                                                                                CarBrands>(
-                                                                              child: Row(
-                                                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                                                crossAxisAlignment: CrossAxisAlignment.end,
-                                                                                children: <Widget>[
-                                                                                  Padding(
-                                                                                    padding: EdgeInsets.only(right: 30.0),
-                                                                                    child: new Text(
-                                                                                      carBrand.name,
-                                                                                      style: TextStyle(
-                                                                                        fontFamily: 'IRANSans',
-                                                                                        fontSize: 12.0,
-                                                                                      ),
+                                            child: FutureBuilder<
+                                                    List<CarBrands>>(
+                                                future: fetchCarBrands(),
+                                                builder: (BuildContext
+                                                        context,
+                                                    AsyncSnapshot<
+                                                            List<CarBrands>>
+                                                        snapshot) {
+                                                  if (!snapshot.hasData)
+                                                    return LinearProgressIndicator(
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                      valueColor:
+                                                          new AlwaysStoppedAnimation<
+                                                                  Color>(
+                                                              CustomColors
+                                                                  .BlueDark),
+                                                    );
+                                                  return Container(
+                                                      decoration:
+                                                          BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                    10.0),
+                                                        border: Border.all(
+                                                            color: Colors
+                                                                .blueGrey,
+                                                            style: BorderStyle
+                                                                .solid,
+                                                            width: 0.80),
+                                                      ),
+                                                      child:
+                                                          DropdownButtonHideUnderline(
+                                                              child: DropdownButton<
+                                                                      CarBrands>(
+                                                                  icon:
+                                                                      Padding(
+                                                                    child: Icon(
+                                                                        Icons
+                                                                            .branding_watermark),
+                                                                    padding:
+                                                                        EdgeInsets.all(
+                                                                            10.0),
+                                                                  ),
+                                                                  style: TextStyle(
+                                                                      fontFamily:
+                                                                          'IRANSans',
+                                                                      color: Colors
+                                                                          .black54),
+                                                                  items: snapshot
+                                                                      .data
+                                                                      .map((carBrand) =>
+                                                                          DropdownMenuItem<
+                                                                              CarBrands>(
+                                                                            child: Row(
+                                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                                              crossAxisAlignment: CrossAxisAlignment.end,
+                                                                              children: <Widget>[
+                                                                                Padding(
+                                                                                  padding: EdgeInsets.only(right: 30.0),
+                                                                                  child: new Text(
+                                                                                    carBrand.name,
+                                                                                    style: TextStyle(
+                                                                                      fontFamily: 'IRANSans',
+                                                                                      fontSize: 12.0,
                                                                                     ),
-                                                                                  )
-                                                                                ],
-                                                                              ),
-                                                                              value: carBrand,
-                                                                            ))
-                                                                        .toList(),
-                                                                    onChanged:
-                                                                        (CarBrands
-                                                                            value) {
-                                                                      setState(
-                                                                          () {
-                                                                        _carBrandHint =
-                                                                            value.name;
-                                                                        carBrandId =
-                                                                            value.id;
-                                                                        __typeOfCarFuture = fetchTypeOfCar(
-                                                                            carBrandId,
-                                                                            carGroupId);
-                                                                        print("addcar:" +
-                                                                            carBrandId +
-                                                                            "  " +
-                                                                            carGroupId);
+                                                                                  ),
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                            value: carBrand,
+                                                                          ))
+                                                                      .toList(),
+                                                                  onChanged:
+                                                                      (CarBrands value) {
+                                                                    setState(
+                                                                        () {
+                                                                      _carBrandHint =
+                                                                          value.name;
+                                                                      carBrandId =
+                                                                          value.id;
+                                                                      __typeOfCarFuture = fetchTypeOfCar(
+                                                                          carBrandId,
+                                                                          carGroupId);
+                                                                      print("addcar:" +
+                                                                          carBrandId +
+                                                                          "  " +
+                                                                          carGroupId);
 
-                                                                        print(
-                                                                            carBrandId);
-                                                                        print(
-                                                                            carGroupId);
-                                                                      });
-                                                                    },
-                                                                    isExpanded:
-                                                                        true,
-                                                                    hint:
-                                                                        Padding(
-                                                                      padding:
-                                                                          EdgeInsets.all(
-                                                                              10.0),
-                                                                      child:
-                                                                          Text(
-                                                                        _carBrandHint,
-                                                                      ),
-                                                                    ))));
-                                                  }),
-                                            ),
+                                                                      print(
+                                                                          carBrandId);
+                                                                      print(
+                                                                          carGroupId);
+                                                                    });
+                                                                  },
+                                                                  isExpanded:
+                                                                      true,
+                                                                  hint:
+                                                                      Padding(
+                                                                    padding:
+                                                                        EdgeInsets.all(
+                                                                            10.0),
+                                                                    child:
+                                                                        Text(
+                                                                      _carBrandHint,
+                                                                    ),
+                                                                  ))
+                                                          )
+                                                  );
+                                                }),
                                           )
                                         ],
                                       ),
@@ -522,7 +520,10 @@ class _AddCarState extends State<AddCar> with TickerProviderStateMixin {
                                                                 child: Text(
                                                                   _typeOfCarHint,
                                                                 ),
-                                                              ))));
+                                                              )
+                                                          )
+                                                      )
+                                              );
                                             }),
                                       ),
                                       SizedBox(
@@ -705,8 +706,7 @@ class _AddCarState extends State<AddCar> with TickerProviderStateMixin {
                                                                       ))
                                                                   .toList(),
                                                               onChanged:
-                                                                  (CarColors
-                                                                      value) {
+                                                                  (CarColors value) {
                                                                 setState(() {
                                                                   _carColorHint =
                                                                       value

@@ -272,7 +272,7 @@ class _carsListState extends State<carsList> with TickerProviderStateMixin {
             ),
 //            ),
             floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-            floatingActionButton: addInsuranceFab(context),
+            floatingActionButton: addCarFab(context),
             bottomNavigationBar: BottomNavigationBar(
                 currentIndex: 0,
                 type: BottomNavigationBarType.fixed,

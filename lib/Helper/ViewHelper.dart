@@ -514,6 +514,49 @@ class ViewHelper
 
 
 
+  static insuranceDatePicker(BuildContext context , DateInsurance , function , title , color , bool start){
+    Size size = MediaQuery.of(context).size;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          GestureDetector(
+            child: Material(
+              elevation: 5.0,
+              borderRadius: BorderRadius.all(Radius.circular(6.0)),
+              child: Container(
+                height: size.height * .055,
+                width: size.width * .35,
+                decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.all(Radius.circular(6.0))
+                ),
+                child: Center(
+                  child: Text(title ,style: TextStyle(
+                      fontSize: 12.0,
+                      color: (!start) ? Colors.white : Colors.black,
+                  ),),
+                ),
+              ),
+            ),
+            onTap: (){
+              function();
+            },
+          ),
+          Text('${DateInsurance}',style: TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.w600
+          ),),
+        ],
+      ),
+    );
+  }
+
+
+  static insuranceTypeFutureId(callBack , _insuranceTypeHint){
+
+  }
 
 
 
