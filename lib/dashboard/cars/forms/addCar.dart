@@ -55,7 +55,7 @@ class _AddCarState extends State<AddCar> with TickerProviderStateMixin {
   String _name = 'کاربر';
   String _lastName = 'گرامی';
   var complainData;
-  String _customer_id = '0';
+  static String _customer_id = '0';
 
   Future<void> setData() async {
     showLoadingDialog(tapDismiss: false);
@@ -77,6 +77,8 @@ class _AddCarState extends State<AddCar> with TickerProviderStateMixin {
     // TODO: implement initState
     super.initState();
     setData();
+
+    print('##################################%%%%%%%%%%%%%%%%%%%% ${_customer_id}');
 
     menuController = new MenuController(
       vsync: this,
@@ -929,7 +931,7 @@ class _AddCarState extends State<AddCar> with TickerProviderStateMixin {
             context,
             PageTransition(
                 type: PageTransitionType.downToUp,
-                child: SuccessPage('خودرو جدید با موفقیت اضافه شد !' , widget.name , widget.lastName , widget.customerID)));
+                child: SuccessPage('خودرو جدید با موفقیت اضافه شد !' , widget.name , widget.lastName , 1)));
         print('amin');
       }
     });

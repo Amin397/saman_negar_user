@@ -196,65 +196,65 @@ class _InsuranceListState extends State<InsuranceList>
                                                       'شرکت بیمه: ${snapShot.data[index]['companyName']}\n'
                                                       'شعبه شرکت بیمه: ${snapShot.data[index]['typeofInsurance']}'),
                                           actions: <Widget>[],
-                                          secondaryActions: <Widget>[
-                                            IconSlideAction(
-                                              caption: 'ویرایش',
-                                              color: Colors.green,
-                                              icon: Icons.edit,
-                                              onTap: () {
-                                                // Navigator.of(context)
-                                                //     .pushReplacement(PageTransition(
-                                                //     child: EditInsurance(
-                                                //         name: widget.name,
-                                                //         lastName: widget.lastName,
-                                                //         customerID: widget.customerID,
-                                                //         carId:snapShot.data[index]['customer_car_id'],
-                                                //         vin_number:snapShot.data[index]['vin_number'],
-                                                //         pdate : snapShot.data[index]['production_date'],
-                                                //         plaque : snapShot.data[index]['plaque'],
-                                                //         carcolorid : snapShot.data[index]['color_id'],
-                                                //         carspecs : snapShot.data[index]['text'],
-                                                //         carGroupId : snapShot.data[index]['car_group_id'],
-                                                //         carBrandId : snapShot.data[index]['car_brand_id'],
-                                                //         carModelId : snapShot.data[index]['car_model_id'],
-                                                //         carNameId : snapShot.data[index]['car_name_id']
-                                                //     ),
-                                                //     type: PageTransitionType.fade));
-                                              },
-                                            ),
-                                            IconSlideAction(
-                                              caption: 'حذف بیمه',
-                                              color: Colors.red,
-                                              icon: Icons.delete,
-                                              onTap: () async {
-                                                showLoadingDialog();
-                                                var res = await makePostRequest(
-                                                    '${CustomStrings.API_INSURANCE}',
-                                                    {
-                                                      'customer_id': snapShot
-                                                              .data[index][
-                                                          'customer_insurance_id'],
-                                                      'api_type': 'delete_app'
-                                                    }).then((value) {
-                                                  if (value['result'] ==
-                                                      'done') {
-                                                    setState(() {
-                                                      insurance =
-                                                          fetchInsurance();
-                                                    });
-                                                    hideLoadingDialog();
-                                                  } else {
-                                                    hideLoadingDialog();
-                                                    showRichDialog(context,
-                                                        title: 'کاربر گرامی!',
-                                                        text:
-                                                            'با عرض پوزش عملیات مورد نظر شما تکمیل نشد ٬ لطفا دوباره تلاش کنید و در صورت تکرار این خطا با پشتیبانی تماس حاصل فرمایید',
-                                                        type: 0);
-                                                  }
-                                                });
-                                              },
-                                            ),
-                                          ],
+                                          // secondaryActions: <Widget>[
+                                          //   // IconSlideAction(
+                                          //   //   caption: 'ویرایش',
+                                          //   //   color: Colors.green,
+                                          //   //   icon: Icons.edit,
+                                          //   //   onTap: () {
+                                          //   //     // Navigator.of(context)
+                                          //   //     //     .pushReplacement(PageTransition(
+                                          //   //     //     child: EditInsurance(
+                                          //   //     //         name: widget.name,
+                                          //   //     //         lastName: widget.lastName,
+                                          //   //     //         customerID: widget.customerID,
+                                          //   //     //         carId:snapShot.data[index]['customer_car_id'],
+                                          //   //     //         vin_number:snapShot.data[index]['vin_number'],
+                                          //   //     //         pdate : snapShot.data[index]['production_date'],
+                                          //   //     //         plaque : snapShot.data[index]['plaque'],
+                                          //   //     //         carcolorid : snapShot.data[index]['color_id'],
+                                          //   //     //         carspecs : snapShot.data[index]['text'],
+                                          //   //     //         carGroupId : snapShot.data[index]['car_group_id'],
+                                          //   //     //         carBrandId : snapShot.data[index]['car_brand_id'],
+                                          //   //     //         carModelId : snapShot.data[index]['car_model_id'],
+                                          //   //     //         carNameId : snapShot.data[index]['car_name_id']
+                                          //   //     //     ),
+                                          //   //     //     type: PageTransitionType.fade));
+                                          //   //   },
+                                          //   // ),
+                                          //   IconSlideAction(
+                                          //     caption: 'حذف بیمه',
+                                          //     color: Colors.red,
+                                          //     icon: Icons.delete,
+                                          //     onTap: () async {
+                                          //       showLoadingDialog();
+                                          //       var res = await makePostRequest(
+                                          //           '${CustomStrings.API_INSURANCE}',
+                                          //           {
+                                          //             'customer_id': snapShot
+                                          //                     .data[index][
+                                          //                 'customer_insurance_id'],
+                                          //             'api_type': 'delete_app'
+                                          //           }).then((value) {
+                                          //         if (value['result'] ==
+                                          //             'done') {
+                                          //           setState(() {
+                                          //             insurance =
+                                          //                 fetchInsurance();
+                                          //           });
+                                          //           hideLoadingDialog();
+                                          //         } else {
+                                          //           hideLoadingDialog();
+                                          //           showRichDialog(context,
+                                          //               title: 'کاربر گرامی!',
+                                          //               text:
+                                          //                   'با عرض پوزش عملیات مورد نظر شما تکمیل نشد ٬ لطفا دوباره تلاش کنید و در صورت تکرار این خطا با پشتیبانی تماس حاصل فرمایید',
+                                          //               type: 0);
+                                          //         }
+                                          //       });
+                                          //     },
+                                          //   ),
+                                          // ],
                                         );
                                       },
                                     );

@@ -82,9 +82,9 @@ class _carsListState extends State<carsList> with TickerProviderStateMixin {
         child: new Scaffold(
             resizeToAvoidBottomPadding: false,
             key: _scaffoldKey,
-            body:   new Stack(
+            body: Stack(
               children: <Widget>[
-                new Transform.translate(
+                 Transform.translate(
                     offset: new Offset(
                         0.0, MediaQuery.of(context).size.height * 0.0001),
                     child: LiquidPullToRefresh(
@@ -329,7 +329,6 @@ class _carsListState extends State<carsList> with TickerProviderStateMixin {
       'api_type': 'getCars',
       'request': 'app'
     });
-    print(data.json().toString());
     print(data.json()[0]["car_group_id"]);
     return data.json();
   }

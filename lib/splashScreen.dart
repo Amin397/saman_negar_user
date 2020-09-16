@@ -77,6 +77,7 @@ class _SplashScreenState extends State<SplashScreen> {
             if (data['result'] == 'login' || data['result'] == 'failed') {
               return WelcomePage();
             } else if (data['result'] == 'success') {
+              setPref('customer_id', data['customer_id']);
               return Home();
             }
           } else if (snapshot.hasError) {

@@ -554,6 +554,8 @@ class ViewHelper
   }
 
 
+
+
   static insuranceTypeFutureId(callBack , _insuranceTypeHint){
 
   }

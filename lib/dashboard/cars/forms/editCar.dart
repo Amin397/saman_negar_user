@@ -606,7 +606,7 @@ class _EditCarState extends State<EditCar> with TickerProviderStateMixin {
             context,
             PageTransition(
                 type: PageTransitionType.downToUp,
-                child: SuccessPage('خودرو با موفقیت ویرایش شد !' , widget.name , widget.lastName , widget.customerID)));
+                child: SuccessPage('خودرو با موفقیت ویرایش شد !' , widget.name , widget.lastName  , 1)));
       }else{
         print('amin0');
       }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:load/load.dart';
@@ -14,6 +15,7 @@ import 'package:samannegarusers/dashboard/cars/models/carModel.dart';
 import 'package:samannegarusers/dashboard/cars/models/typeOfCar.dart';
 import 'package:samannegarusers/dashboard/home.dart';
 import 'package:samannegarusers/dashboard/insuranceAndValue/insurance_list.dart';
+import 'package:samannegarusers/dashboard/insuranceAndValue/models/car_insurance.dart';
 import 'package:samannegarusers/dashboard/insuranceAndValue/models/insurance_branch.dart';
 import 'package:samannegarusers/dashboard/insuranceAndValue/models/insurance_companey.dart';
 import 'package:samannegarusers/dashboard/insuranceAndValue/models/type_of_insurance.dart';
@@ -55,37 +57,27 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
   GlobalKey<RefreshIndicatorState>();
 
-  var insurance;
+  // var car;
   final List dismissControllers = [];
   String _name = 'کاربر';
   String _lastName = 'گرامی';
   var complainData;
   String _customer_id = '0';
 
-  Future<void> setData() async {
-    showLoadingDialog(tapDismiss: false);
-    var res = await makePostRequest(CustomStrings.CUSTOMERS, {
-      'customer_id': await getPref('customer_id'),
-      'api_type': 'get',
-      'request': 'app'
-    });
-    res = res.json();
-    print("_AddCarState setdata: " + res.toString());
-    _name = await res['data']['name'];
-    _lastName = await res['data']['lname'];
-    _customer_id = await res['data']['customer_id'];
-    hideLoadingDialog();
-  }
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    setData();
 
     menuController = new MenuController(
       vsync: this,
     )..addListener(() => setState(() {}));
+
+    getPref('customer_id').then((value){
+      setState(() {
+        _customer_id = value;
+      });
+    });
   }
 
   @override
@@ -101,11 +93,17 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
     );
   }
 
-  TextEditingController production_year = new TextEditingController();
-  TextEditingController vinnumber = new TextEditingController();
+  TextEditingController max_jani = new TextEditingController();
+  TextEditingController max_payment = new TextEditingController();
+  TextEditingController insurance_number = new TextEditingController();
 
   MaskTextInputFormatter max_khesarat_formatter =
   new MaskTextInputFormatter(mask: '###,###,###,###,###,###,###,###', filter: {"#": RegExp(r'[0-9]')});
+
+  MaskTextInputFormatter max_jani_formatter =
+  new MaskTextInputFormatter(mask: '###,###,###,###,###,###,###,###', filter: {"#": RegExp(r'[0-9]')});
+
+
 
   String insuranceTypeId = '0';
   String _insuranceTypeHint = 'گروه بیمه نامه';
@@ -113,12 +111,16 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
   String _insuranceCompanyHint = 'نام شرکت بیمه نامه';
   String _insuranceCompanyBranchId = '0';
   String _insuranceCompanyBranchHint = 'لطفا شعبه بیمه را انتخاب نمایید';
+  String _insuranceCarId = '0';
+  String _insuranceCarHint = 'لطفا خودرو خود را انتخاب نمایید';
   Future _insuranceType = fetchInsuranceType();
   Future _insuranceCompany = fetchInsuranceCompany();
   Future __insuranceCompanyBranch = fetchInsuranceBranch('0');
 
+
   String startDateInsurance = '';
   String endDateInsurance = '';
+
 
   @override
   Widget page(BuildContext context) {
@@ -144,21 +146,21 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
                                 ),
                                 _textFormField(
                                     size,
-                                    vinnumber,
+                                    max_jani,
                                     'سقف میزان پرداخت خسارت جانی (ريال)',
                                     1,
                                     .075,
                                     true,
                                     1,
                                     true,
-                                    max_khesarat_formatter,
-                                    false),
+                                    max_jani_formatter,
+                                    true),
                                 SizedBox(
                                   height: 20.0,
                                 ),
                                 _textFormField(
                                     size,
-                                    production_year,
+                                    max_payment,
                                     'سقف میزان پرداخت خسارت (ريال)',
                                     1,
                                     .075,
@@ -170,12 +172,26 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
                                 SizedBox(
                                   height: 20.0,
                                 ),
+                                _textFormFieldInsuranceNumber(
+                                    size,
+                                    insurance_number,
+                                    'شماره بیمه نامه',
+                                    1,
+                                    .075,
+                                    false,
+                                    1,
+                                    true,
+                                ),
+                                SizedBox(
+                                  height: 20.0,
+                                ),
                                 ViewHelper.insuranceDatePicker(context, startDateInsurance, (){
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext _) {
                                       return  PersianDateTimePicker(
-                                        initial: '1398/03/20 19:50',
+                                        color: Colors.orangeAccent,
+                                        initial: '1399/03/20 19:50',
                                         type: 'datetime',
                                         onSelect: (date) {
                                           setState(() {
@@ -185,7 +201,7 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
                                       );
                                     },
                                   );
-                                } , 'تاریخ شروع بیمه نامه' , Colors.greenAccent , true),
+                                } , 'تاریخ شروع بیمه نامه' , Colors.yellowAccent.shade700 , true),
                                 SizedBox(
                                   height: 20.0,
                                 ),
@@ -194,7 +210,8 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
                                     context: context,
                                     builder: (BuildContext _) {
                                       return  PersianDateTimePicker(
-                                        initial: '1398/03/20 19:50',
+                                        color: Colors.orangeAccent,
+                                        initial: '1399/03/20 19:50',
                                         type: 'datetime',
                                         onSelect: (date) {
                                           setState(() {
@@ -204,9 +221,107 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
                                       );
                                     },
                                   );
-                                } , 'تاریخ اتمام بیمه نامه' , Colors.redAccent , false),
+                                } , 'تاریخ اتمام بیمه نامه' , Colors.orangeAccent.shade700 , false),
                                 SizedBox(
-                                  height: 25.0,
+                                  height: 20.0,
+                                ),
+                                FutureBuilder<List<CarInsurance>>(
+                                    future: fetchInsuranceCar(_customer_id),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<List<CarInsurance>>
+                                        snapshot) {
+                                      if (!snapshot.hasData)
+                                        return LinearProgressIndicator(
+                                          backgroundColor: Colors.white,
+                                          valueColor:
+                                          new AlwaysStoppedAnimation<
+                                              Color>(
+                                              CustomColors
+                                                  .BlueDark),
+                                        );
+                                      return Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                10.0),
+                                            border: Border.all(
+                                                color: Colors.blueGrey,
+                                                style:
+                                                BorderStyle.solid,
+                                                width: 0.80),
+                                          ),
+                                          child:
+                                          DropdownButtonHideUnderline(
+                                              child: DropdownButton<
+                                                  CarInsurance>(
+                                                  icon: Padding(
+                                                    child: Icon(Icons
+                                                        .branding_watermark),
+                                                    padding:
+                                                    EdgeInsets
+                                                        .all(
+                                                        10.0),
+                                                  ),
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                      'IRANSans',
+                                                      color: Colors
+                                                          .black54),
+                                                  items: snapshot
+                                                      .data
+                                                      .map((insuranceCar) =>
+                                                      DropdownMenuItem<
+                                                          CarInsurance>(
+                                                        child:
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                          crossAxisAlignment:
+                                                          CrossAxisAlignment.end,
+                                                          children: <
+                                                              Widget>[
+                                                            Padding(
+                                                              padding: EdgeInsets.only(right: 30.0),
+                                                              child: new Text(
+                                                                (insuranceCar.car_name == null) ? 'amin' : insuranceCar.car_name,
+                                                                style: TextStyle(
+                                                                  fontFamily: 'IRANSans',
+                                                                  fontSize: 12.0,
+                                                                ),
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        value:
+                                                        insuranceCar,
+                                                      ))
+                                                      .toList(),
+                                                  onChanged:
+                                                      (CarInsurance
+                                                  value) {
+                                                    setState(() {
+                                                      _insuranceCarHint =
+                                                          value.car_name;
+                                                      _insuranceCarId =
+                                                          value.car_id;
+                                                    });
+                                                  },
+                                                  isExpanded: true,
+                                                  hint: Padding(
+                                                    padding:
+                                                    EdgeInsets
+                                                        .all(
+                                                        10.0),
+                                                    child: Text(
+                                                      _insuranceCarHint,
+                                                    ),
+                                                  )
+                                              )
+                                          )
+                                      );
+                                    }),
+                                SizedBox(
+                                  height: size.height * .02,
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -292,7 +407,7 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
                                                                 _insuranceTypeHint);
                                                             insuranceTypeId =
                                                                 value.id;
-                                                            // __insuranceCompanyBranch = fetchInsuranceBranch(
+                                                            // __insuranceCompanyBranch = fetchCarInsurance(
                                                             //     insuranceCompany,
                                                             //     insuranceTypeId,
                                                             //     insuranceCompanyBranch);
@@ -419,7 +534,7 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
                                   ],
                                 ),
                                 SizedBox(
-                                  height: 25.0,
+                                  height: size.height * .02,
                                 ),
                                 FutureBuilder<List<InsuranceBranch>>(
                                     future: __insuranceCompanyBranch,
@@ -512,12 +627,18 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
                                                     child: Text(
                                                       _insuranceCompanyBranchHint,
                                                     ),
-                                                  ))));
+                                                  )
+                                              )
+                                          )
+                                      );
                                     }),
                                 SizedBox(
-                                  height: size.height * .04,
+                                  height: size.height * .02,
                                 ),
                                 _submitButton(size),
+                                SizedBox(
+                                  height: size.height * .02,
+                                ),
                               ],
                             ),
                           )
@@ -579,44 +700,69 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
 
   Widget _submitButton(Size size){
     return GestureDetector(
-      child: Material(
-        elevation: 5.0,
-        borderRadius: BorderRadius.all(
-            Radius.circular(5.0)),
-        child: Container(
-          width: size.width,
-          height: size.height * .08,
-          padding: EdgeInsets.symmetric(
-              vertical: size.height * .01),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-              color: Colors.green,
-              borderRadius: BorderRadius.all(
-                  Radius.circular(5))),
-          child: Text(
-            'ثبت بیمه نامه',
-            style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-                fontFamily: 'IRANSans'),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10.0),
+        child: Material(
+          elevation: 5.0,
+          borderRadius: BorderRadius.all(
+              Radius.circular(5.0)),
+          child: Container(
+            width: size.width,
+            height: size.height * .08,
+            padding: EdgeInsets.symmetric(
+                vertical: size.height * .01),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.all(
+                    Radius.circular(5))),
+            child: Text(
+              'ثبت بیمه نامه',
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                  fontFamily: 'IRANSans'),
+            ),
           ),
         ),
       ),
       onTap: () {
         List<String> plate = [];
         print(plate.toString());
-        addMyInsurance();
+        addMyInsurance(
+          context,
+          _customer_id,
+          max_payment.text,
+          max_jani.text,
+          startDateInsurance,
+          endDateInsurance,
+            insuranceTypeId,
+          insuranceCompanyId,
+          _insuranceCompanyBranchId,
+            _insuranceCarId,
+            insurance_number.text
+        );
       },
     );
   }
 
-  Future<void> addMyInsurance() async {
+  Future<void> addMyInsurance(BuildContext context , customer_id , max_payment , max_jani,
+      startDate , endDate , insuranceTypeId , companyId , branchId , CarId , insurance_number) async {
     showLoadingDialog();
     makePostRequestAmin(
-        CustomStrings.API_ROOT + 'Customers/Cars/CustomerCars.php', {
+        CustomStrings.API_INSURANCE , {
       'api_type': 'add',
-      'customer_id': _customer_id,
+      'customer_id': customer_id,
+      'max_payment': max_payment,
+      'max_jani': max_jani,
+      'start_date': startDate,
+      'end_date': endDate,
+      'typeOfInsurace_id': insuranceTypeId,
+      'company_id': companyId,
+      'company_branch_id': branchId,
+      'car_id': CarId,
+      'insurance_number': insurance_number
     }).then((value) {
       if (value['result'] == 'success') {
         hideLoadingDialog();
@@ -624,21 +770,56 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
             context,
             PageTransition(
                 type: PageTransitionType.downToUp,
-                child: SuccessPage('بیمه نامه جدید با موفقیت اضافه شد !' , widget.name , widget.lastName , widget.customerID)));
+                child: SuccessPage('بیمه نامه جدید با موفقیت اضافه شد !' , widget.name , widget.lastName , 2)));
       }
     });
   }
 
-  Widget _textFormField(Size size, TextEditingController controller, lable,
-      double w, double h, bool numeric, int maxLines, bool enable,
-      [mask, maskEnable]) {
+  Widget _textFormField(Size size, TextEditingController controller, lable, double w, double h, bool numeric, int maxLines, bool enable, [mask, maskEnable]) {
     return Container(
       height: size.height * h,
       width: size.width * w,
       color: Colors.white,
       child: TextField(
         textInputAction: TextInputAction.done,
-        inputFormatters: (maskEnable) ? [mask] : null,
+        inputFormatters: (maskEnable) ? [mask] : '',
+        enabled: enable,
+        textAlign: TextAlign.center,
+        keyboardType: (numeric) ? TextInputType.number : TextInputType.text,
+        maxLines: maxLines,
+        controller: controller,
+        decoration: InputDecoration(
+          fillColor: Colors.grey[50],
+          enabledBorder: new OutlineInputBorder(
+            borderRadius: new BorderRadius.circular(6.0),
+            borderSide: new BorderSide(
+              color: Colors.black45,
+            ),
+          ),
+          disabledBorder: new OutlineInputBorder(
+            borderRadius: new BorderRadius.circular(25.0),
+            borderSide: new BorderSide(
+              color: Color(0xff290d66),
+            ),
+          ),
+          filled: true,
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+              borderSide: BorderSide(color: Colors.deepOrangeAccent)),
+          labelText: lable,
+          labelStyle: TextStyle(
+              fontFamily: 'IRANSans', color: Colors.black, fontSize: 14.0),
+        ),
+      ),
+    );
+  }
+  Widget _textFormFieldInsuranceNumber(Size size, TextEditingController controller, lable, double w, double h, bool numeric, int maxLines, bool enable) {
+    return Container(
+      height: size.height * h,
+      width: size.width * w,
+      color: Colors.white,
+      child: TextField(
+        textInputAction: TextInputAction.done,
         enabled: enable,
         textAlign: TextAlign.center,
         keyboardType: (numeric) ? TextInputType.number : TextInputType.text,
@@ -670,3 +851,5 @@ class _AddInsuranceState extends State<AddInsurance> with TickerProviderStateMix
     );
   }
 }
+
+
